@@ -19,22 +19,34 @@ public class MyProject implements Project {
 
     public int numPaths(int[][] adjlist, int src, int dst) {
         int numPaths = 0;
-        if (src == dst) return 1;
+
+        if (src == dst) 
+		{
+			return 1;
+		}
   
         boolean visited[] = new boolean[adjlist.length];
+
         LinkedList<Integer> queue = new LinkedList<Integer>();
   
         visited[src] = true;
         queue.add(src);
   
-        while (queue.size() != 0) {
+        while (queue.size() != 0)
+		{
             int u = queue.poll();
-              for (int col = 0; col < adjlist[u].length; col++) {
-                  int v = adjlist[u][col];
-                        if(v==dst) numPaths++;
-                  if(!visited[v]){
-                           visited[v] = true;
-                      queue.add(v);
+
+            for (int col = 0; col < adjlist[u].length; col++)
+			{
+                int vis = adjlist[u][col];
+                if(vis==dst)
+				{
+					numPaths++;
+				}
+                  if(!visited[vis])
+				  {
+                    visited[vis] = true;
+                	queue.add(vis);
                   }
                }
         }     
@@ -135,28 +147,33 @@ public class MyProject implements Project {
     }
 
     public int maxDownloadSpeed(int[][] adjlist, int[][] speeds, int src, int dst) {
-        if (src == dst) return -1;
-        int max_flow = 0;
-        int n = adjlist.length;
+        if (src == dst)
+		{
+			return -1;
+		}
 
-        int[] dist = new int[n];
-        int[][] resGraph = new int[n][n];
-        for (int i=0; i<n; i++){
-            Arrays.fill(resGraph[i],0);
-            for (int j=0; j<adjlist[i].length; j++){
+        int max_dl = 0;
+        int len = adjlist.length;
+		int[][] Graph = new int[len][len];
+        int[] dist = new int[len];
+
+        for (int i = 0; i < len; i++)
+		{
+            Arrays.fill(Graph[i],0);
+            for (int j = 0; j < adjlist[i].length; j++){
                 int reachDevice = adjlist[i][j];
-                resGraph[i][reachDevice] = speeds[i][j];
+                Graph[i][reachDevice] = speeds[i][j];
             }
         }
             
-        while (bfsDinic(adjlist, src, dst, dist, resGraph)){
-            int ptr[] = new int[n];
+        while (bfsDinic(adjlist, src, dst, dist, Graph)){
+            int ptr[] = new int[len];
             while (true){
-                int path_flow = flow(adjlist, ptr, dist, src, dst, Integer.MAX_VALUE, resGraph);
-                if (path_flow==0) break;
-                max_flow += path_flow;
+                int path_speed = flow(adjlist, ptr, dist, src, dst, Integer.MAX_VALUE, Graph);
+                if (path_speed==0) break;
+                max_dl += path_speed;
             }
         }
-        return max_flow;
+        return max_dl;
         }
     }

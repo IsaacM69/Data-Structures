@@ -141,23 +141,23 @@ public class MyProject implements Project {
 		return dist[dst] >= 0;
 	}
 
-	private int speed(int adjlist[][], int ptr[], int dist[], int u, int dst, int f, int graph[][])
+	private int speed(int adjlist[][], int n[], int dist[], int u, int dst, int f, int graph[][])
 	{
         if (u == dst)
 		{ 
 			return f;
 		}
-        for(int k = 0; ptr[u] < adjlist[u].length; ptr[u]++)
+        for(int k = 0; n[u] < adjlist[u].length; n[u]++)
 		{
-            int v = adjlist[u][ptr[u]];
+            int list = adjlist[u][n[u]];
 
-            if(dist[v] == dist[u]+1 && graph[u][v] > 0)
+            if(dist[list] == dist[u]+1 && graph[u][list] > 0)
 			{
-                int path_speed = speed(adjlist, ptr, dist, v, dst, Math.min(f, graph[u][v]), graph);
+                int path_speed = speed(adjlist, n, dist, list, dst, Math.min(f, graph[u][list]), graph);
                 if (path_speed > 0)
 				{
-                    graph[u][v]-=path_speed;
-                    graph[v][u]+=path_speed;
+                    graph[u][list]-=path_speed;
+                    graph[list][u]+=path_speed;
                     
                     return path_speed;
                 }
@@ -181,15 +181,15 @@ public class MyProject implements Project {
 		{
             Arrays.fill(graph[i],0);
             for (int j = 0; j < adjlist[i].length; j++){
-                int reachDevice = adjlist[i][j];
-                graph[i][reachDevice] = speeds[i][j];
+                int reach_device = adjlist[i][j];
+                graph[i][reach_device] = speeds[i][j];
             }
         }
             
         while (find_dist(adjlist, src, dst, dist, graph)){
-            int ptr[] = new int[len];
+            int n[] = new int[len];
             while (true){
-                int path_speed = speed(adjlist, ptr, dist, src, dst, Integer.MAX_VALUE, graph);
+                int path_speed = speed(adjlist, n, dist, src, dst, Integer.MAX_VALUE, graph);
                 if (path_speed==0) break;
                 max_dl += path_speed;
             }

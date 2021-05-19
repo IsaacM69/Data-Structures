@@ -42,14 +42,6 @@ public class MyProject implements Project {
         return numPaths;
     }
 
-
-	private boolean inSameSubnet(short[] vertex, short[] query) {
-        for (int i = 0; i < query.length; i++) {
-            if(query[i] != vertex[i]) return false;
-        }
-        return true;
-    }
-
     
     private boolean bfsDinic(int adjlist[][], int src, int dst, int[] dist, int resGraph[][]){ 
 		int n = adjlist.length;
@@ -89,7 +81,7 @@ public class MyProject implements Project {
         }
         return 0;
     }
-	
+
     public int[] closestInSubnet(int[][] adjlist, short[][] addrs, int src, short[][] queries) {
         int [] hops = new int[queries.length];
 		int [] sourceDevice = adjlist[src];

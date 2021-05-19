@@ -1,18 +1,53 @@
 import java.util.*;
 
-// Isaac Muia (22701047)
+// Isaac Muia 22701047
 // Dylan Fellows 22731134
 
 
 public class MyProject implements Project {
     public boolean allDevicesConnected(int[][] adjlist) {
         boolean connected = true;
-		for(int[] devices: adjlist)
+		LinkedList<int[]> connectedDevices = new LinkedList<int[]>();
+
+		for(int [] device: adjlist)
 		{
-			if(devices.length != (adjlist.length - 1))
+			if(device.length == 0 & adjlist.length != 1)
 			{
 				connected = false;
 			}
+			if(connectedDevices.isEmpty())
+			{
+				for(int d: device)
+				{
+					connectedDevices.add(adjlist[d]);
+				}
+			}
+			else
+			{
+				boolean in = false;
+				for(int d: device)
+				{
+					for(int[] targetDevice: connectedDevices)
+					{
+						for(int target: targetDevice)
+						{
+							if(d == target)
+							{
+								in = true;
+							}
+						}
+					}
+				}
+				if(in == false)
+				{
+					connected = false;
+				}
+				for(int d: device)
+				{
+					connectedDevices.add(adjlist[d]);
+				}
+			}
+			connectedDevices.add(device);
 		}
         return connected;
     }

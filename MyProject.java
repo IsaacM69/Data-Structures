@@ -2,7 +2,6 @@ import java.util.*;
 
 // Isaac Muia (22701047)
 // Dylan Fellows 22731134
-// Nice gary
 
 
 public class MyProject implements Project {

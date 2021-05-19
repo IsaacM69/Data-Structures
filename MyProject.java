@@ -55,44 +55,9 @@ public class MyProject implements Project {
     }
 
     
-    private boolean bfsDinic(int adjlist[][], int src, int dst, int[] dist, int resGraph[][]){ 
-		int n = adjlist.length;
-		Arrays.fill(dist,-1);
-		dist[src]=0;
-		LinkedList<Integer> queue = new LinkedList<Integer>();
-        	queue.add(src);
+    
 
-		while (!queue.isEmpty()){
-			int u=queue.poll();
-			for (int i=0; i<n; i++){
-				for (int j=0; j<adjlist[i].length; j++){
-					int v=adjlist[i][j];
-					if (dist[v]<0 && resGraph[u][v]>0){
-						dist[v] = dist[u]+1;
-						queue.add(v);
-					}
-				}
-			}
-		}
-		return dist[dst] >= 0;
-	}
-
-    private int flow(int adjlist[][], int ptr[], int dist[], int u, int dst, int f, int resGraph[][]){
-        if (u == dst) return f;
-        for(; ptr[u]<adjlist[u].length; ptr[u]++){
-            int v = adjlist[u][ptr[u]];
-            if(dist[v] == dist[u]+1 && resGraph[u][v]>0){
-                int path_flow = flow(adjlist, ptr, dist, v, dst, Math.min(f, resGraph[u][v]), resGraph);
-                if (path_flow>0){
-                    resGraph[u][v]-=path_flow;
-                    resGraph[v][u]+=path_flow;
-                    
-                    return path_flow;
-                }
-            }
-        }
-        return 0;
-    }
+    
 
     public int[] closestInSubnet(int[][] adjlist, short[][] addrs, int src, short[][] queries) {
         int [] hops = new int[queries.length];
@@ -146,6 +111,61 @@ public class MyProject implements Project {
         return hops;
     }
 
+	private boolean find_dist(int adjlist[][], int src, int dst, int[] dist, int graph[][]){ 
+		int len = adjlist.length;
+
+		Arrays.fill(dist, -1);
+		dist[src] = 0;
+
+		LinkedList<Integer> queue = new LinkedList<Integer>();
+        queue.add(src);
+
+		while (!queue.isEmpty())
+		{
+			int u=queue.poll();
+
+			for (int i = 0; i < len; i++)
+			{
+				for (int j = 0; j < adjlist[i].length; j++)
+				{
+					int v = adjlist[i][j];
+
+					if (dist[v] < 0 && graph[u][v] > 0)
+					{
+						dist[v] = dist[u]+1;
+						queue.add(v);
+					}
+				}
+			}
+		}
+		return dist[dst] >= 0;
+	}
+
+	private int speed(int adjlist[][], int ptr[], int dist[], int u, int dst, int f, int graph[][])
+	{
+        if (u == dst)
+		{ 
+			return f;
+		}
+        for(int k = 0; ptr[u] < adjlist[u].length; ptr[u]++)
+		{
+            int v = adjlist[u][ptr[u]];
+
+            if(dist[v] == dist[u]+1 && graph[u][v] > 0)
+			{
+                int path_speed = speed(adjlist, ptr, dist, v, dst, Math.min(f, graph[u][v]), graph);
+                if (path_speed > 0)
+				{
+                    graph[u][v]-=path_speed;
+                    graph[v][u]+=path_speed;
+                    
+                    return path_speed;
+                }
+            }
+        }
+        return 0;
+    }
+
     public int maxDownloadSpeed(int[][] adjlist, int[][] speeds, int src, int dst) {
         if (src == dst)
 		{
@@ -154,22 +174,22 @@ public class MyProject implements Project {
 
         int max_dl = 0;
         int len = adjlist.length;
-		int[][] Graph = new int[len][len];
+		int[][] graph = new int[len][len];
         int[] dist = new int[len];
 
         for (int i = 0; i < len; i++)
 		{
-            Arrays.fill(Graph[i],0);
+            Arrays.fill(graph[i],0);
             for (int j = 0; j < adjlist[i].length; j++){
                 int reachDevice = adjlist[i][j];
-                Graph[i][reachDevice] = speeds[i][j];
+                graph[i][reachDevice] = speeds[i][j];
             }
         }
             
-        while (bfsDinic(adjlist, src, dst, dist, Graph)){
+        while (find_dist(adjlist, src, dst, dist, graph)){
             int ptr[] = new int[len];
             while (true){
-                int path_speed = flow(adjlist, ptr, dist, src, dst, Integer.MAX_VALUE, Graph);
+                int path_speed = speed(adjlist, ptr, dist, src, dst, Integer.MAX_VALUE, graph);
                 if (path_speed==0) break;
                 max_dl += path_speed;
             }

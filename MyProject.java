@@ -185,15 +185,15 @@ public class MyProject implements Project {
 
         for(int k = 0; n[u] < adjlist[u].length; n[u]++)
 		{
-            int list = adjlist[u][n[u]];
+            int v = adjlist[u][n[u]];
 
-            if(dist[list] == dist[u]+1 && graph[u][list] > 0)
+            if(dist[v] == dist[u]+1 && graph[u][v] > 0)
 			{
-                int path_speed = speed(adjlist, n, dist, list, dst, Math.min(f, graph[u][list]), graph);
+                int path_speed = speed(adjlist, n, dist, v, dst, Math.min(f, graph[u][v]), graph);
                 if (path_speed > 0)
 				{
-                    graph[u][list]-=path_speed;
-                    graph[list][u]+=path_speed;
+                    graph[u][v]-=path_speed;
+                    graph[v][u]+=path_speed;
                     
                     return path_speed;
                 }

@@ -122,7 +122,7 @@ public class MyProject implements Project {
 
 		while (!queue.isEmpty())
 		{
-			int u=queue.poll();
+			int u = queue.poll();
 
 			for (int i = 0; i < len; i++)
 			{
@@ -132,13 +132,13 @@ public class MyProject implements Project {
 
 					if (dist[v] < 0 && graph[u][v] > 0)
 					{
-						dist[v] = dist[u]+1;
 						queue.add(v);
+						dist[v] = dist[u]+1;
 					}
 				}
 			}
 		}
-		return dist[dst] >= 0;
+		return (dist[dst] >= 0);
 	}
 
 	private int speed(int adjlist[][], int n[], int dist[], int u, int dst, int f, int graph[][])
@@ -147,6 +147,7 @@ public class MyProject implements Project {
 		{ 
 			return f;
 		}
+
         for(int k = 0; n[u] < adjlist[u].length; n[u]++)
 		{
             int list = adjlist[u][n[u]];
@@ -188,12 +189,18 @@ public class MyProject implements Project {
             
         while (find_dist(adjlist, src, dst, dist, graph)){
             int n[] = new int[len];
+
             while (true){
                 int path_speed = speed(adjlist, n, dist, src, dst, Integer.MAX_VALUE, graph);
-                if (path_speed==0) break;
+                if (path_speed == 0)
+				{
+					break;
+				}
                 max_dl += path_speed;
             }
         }
+
         return max_dl;
+
         }
     }

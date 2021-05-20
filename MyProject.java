@@ -6,7 +6,7 @@ public class MyProject implements Project {
     public boolean allDevicesConnected(int[][] adjlist) {
         boolean allConnected = true;
 		LinkedList<int[]> Devices = new LinkedList<int[]>();
-		LinkedList<Integer> connectedDevices = new LinkedList<Integer>();
+		LinkedList<Integer> connectedDevices = new LinkedList<Integer>();//Devices connected to first devices
 		if(adjlist.length == 1) { //trivialy connected
 		}
 		else
@@ -47,7 +47,7 @@ public class MyProject implements Project {
 					}
 					Devices.remove();
 				}
-				if(connectedDevices.size() != adjlist.length)
+				if(connectedDevices.size() != adjlist.length) //If first device isn't connected to all devices not all devices are connected
 				{
 					allConnected = false;
 				}
@@ -101,51 +101,36 @@ public class MyProject implements Project {
     public int[] closestInSubnet(int[][] adjlist, short[][] addrs, int src, short[][] queries) {
         int [] hops = new int[queries.length];
 		int [] sourceDevice = adjlist[src];
+		int subnetID = 0;
 		
 		for(short[] subnet: queries)
 		{
-			int subnetID = 0;
-			for(short[] IP: addrs)
+			boolean done = false;
+			int IP_ID = 0;
+			boolean notInNetwork = false;
+			while(!done)
 			{	
+				short[] IP = addrs[IP_ID];
 				short[] IP1 = new short [] {IP[0]};
 				short[] IP2 = new short []{IP[0],IP[1]};
 				short[] IP3 = new short []{IP[0],IP[1],IP[2]};
 				short[] IP4 = new short []{IP[0],IP[1],IP[2],IP[3]};
-				if(Arrays.equals(subnet,IP1)| Arrays.equals(subnet,IP2)| Arrays.equals(subnet,IP3)| Arrays.equals(subnet,IP4))
+				if(Arrays.equals(subnet,IP1)| Arrays.equals(subnet,IP2)| Arrays.equals(subnet,IP3)| Arrays.equals(subnet,IP4)| subnet.length == 0)
 				{
-					for(int targetDevice: subnet)
-					{
-						int distance = 0;
-						int [] previousDevice = sourceDevice;
-						boolean done = false;
-						boolean realyDone = false;
-						while(realyDone = false)
-						{	
-							while(done == false)
-							{
-								for(int device: previousDevice)
-								{
-									distance++;
-									if(device == targetDevice)
-									{
-										done = true;
-									}
-									else
-									{
-										previousDevice = adjlist[device];
-									}
-								}
-							}
-							
-						}
-					}
+					done = true;
 				}
-				else
+				else if(IP_ID == addrs.length - 1)
 				{
-					hops[subnetID] = Integer.MAX_VALUE;
+					notInNetwork = true;
+					done = true;
 				}
-				subnetID++;
+				IP_ID++;
 			}
+			if(notInNetwork)
+			{
+				hops[subnetID] = Integer.MAX_VALUE;
+			}
+			subnetID++;
 		}
         return hops;
     }

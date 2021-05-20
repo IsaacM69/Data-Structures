@@ -1,55 +1,59 @@
 import java.util.*;
-
 // Isaac Muia 22701047
 // Dylan Fellows 22731134
 
-
 public class MyProject implements Project {
     public boolean allDevicesConnected(int[][] adjlist) {
-        boolean connected = true;
-		LinkedList<int[]> connectedDevices = new LinkedList<int[]>();
-
-		for(int [] device: adjlist)
+        boolean allConnected = true;
+		LinkedList<int[]> Devices = new LinkedList<int[]>();
+		LinkedList<Integer> connectedDevices = new LinkedList<Integer>();
+		if(adjlist.length == 1) { //trivialy connected
+		}
+		else
 		{
-			if(device.length == 0 & adjlist.length != 1)
+			int [] device = adjlist[0];
+			if(device.length == 0 & adjlist.length != 1) // device has no connections
 			{
-				connected = false;
-			}
-			if(connectedDevices.isEmpty())
-			{
-				for(int d: device)
-				{
-					connectedDevices.add(adjlist[d]);
-				}
+				allConnected = false;
 			}
 			else
-			{
-				boolean in = false;
+			{ 
 				for(int d: device)
 				{
-					for(int[] targetDevice: connectedDevices)
+					connectedDevices.add(d);
+					Devices.add(adjlist[d]);
+				}	
+				while(!Devices.isEmpty())
+				{
+					LinkedList<Integer> previousConnectedDevices = connectedDevices;
+					for(int d: Devices.element())
 					{
-						for(int target: targetDevice)
+						boolean in = false;
+						for(int connected: previousConnectedDevices)
 						{
-							if(d == target)
+							if(d == connected)
 							{
 								in = true;
 							}
+							else
+							{
+							}
+						}
+						if(!in)
+						{
+							connectedDevices.add(d);
+							Devices.add(adjlist[d]);
 						}
 					}
+					Devices.remove();
 				}
-				if(in == false)
+				if(connectedDevices.size() != adjlist.length)
 				{
-					connected = false;
-				}
-				for(int d: device)
-				{
-					connectedDevices.add(adjlist[d]);
+					allConnected = false;
 				}
 			}
-			connectedDevices.add(device);
 		}
-        return connected;
+        return allConnected;
     }
 
     public int numPaths(int[][] adjlist, int src, int dst) {

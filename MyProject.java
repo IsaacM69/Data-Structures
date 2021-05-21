@@ -166,7 +166,7 @@ public class MyProject implements Project {
         queue.add(src);
 		hopsToDevice[src] = 0;
 
-        while (queue.size() != 0)
+        while (!queue.isEmpty())
 		{
 			int device = queue.poll();
             for (int col = 0; col < adjlist[device].length; col++)
@@ -187,7 +187,6 @@ public class MyProject implements Project {
             	}
             }
         }     
-  
 		return hop;
 	}
 

@@ -107,7 +107,9 @@ public class MyProject implements Project {
 		{
 			boolean done = false;
 			int IP_ID = 0;
+			int hop = 0;
 			boolean notInNetwork = false;
+			boolean found = false;
 			while(!done)
 			{	
 				short[] IP = addrs[IP_ID];
@@ -117,11 +119,20 @@ public class MyProject implements Project {
 				short[] IP4 = new short []{IP[0],IP[1],IP[2],IP[3]};
 				if(Arrays.equals(subnet,IP1)| Arrays.equals(subnet,IP2)| Arrays.equals(subnet,IP3)| Arrays.equals(subnet,IP4)| subnet.length == 0)
 				{
-					done = true;
+					int temp = findHops(adjlist, IP_ID, src);
+					if(temp < hop | found == false)
+					{
+						hop = temp;
+					}
+					found = true;
 				}
-				else if(IP_ID == addrs.length - 1)
+				if(!found & IP_ID == addrs.length - 1)
 				{
 					notInNetwork = true;
+					done = true;
+				}
+				else if(found & IP_ID == addrs.length - 1)
+				{
 					done = true;
 				}
 				IP_ID++;
@@ -130,10 +141,55 @@ public class MyProject implements Project {
 			{
 				hops[subnetID] = Integer.MAX_VALUE;
 			}
+			else
+			{
+				hops[subnetID] = hop;
+			}
 			subnetID++;
 		}
         return hops;
     }
+
+// queue of how many hops it takes to get to that device
+	private int findHops(int[][] adjlist, int dst, int src) {
+		int hop = Integer.MAX_VALUE;
+        if (src == dst) 
+		{
+			return 0;
+		}
+
+		int [] hopsToDevice = new int[adjlist.length];
+        boolean visited[] = new boolean[adjlist.length];
+        LinkedList<Integer> queue = new LinkedList<Integer>();
+  
+        visited[src] = true;
+        queue.add(src);
+		hopsToDevice[src] = 0;
+
+        while (queue.size() != 0)
+		{
+			int device = queue.poll();
+            for (int col = 0; col < adjlist[device].length; col++)
+			{
+                int vis = adjlist[device][col];
+            
+                if(!visited[vis])
+		 		{		
+					hopsToDevice[vis] = hopsToDevice[device] + 1; 	
+                    visited[vis] = true;
+                	queue.add(vis);
+					if(vis==dst)
+					{
+					hop = hopsToDevice[vis];
+					queue.clear();
+					break;
+					}
+            	}
+            }
+        }     
+  
+		return hop;
+	}
 
 	private boolean find_dist(int adjlist[][], int src, int dst, int[] dist, int graph[][]){ 
 		int len = adjlist.length;

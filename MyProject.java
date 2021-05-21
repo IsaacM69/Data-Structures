@@ -89,7 +89,7 @@ public class MyProject implements Project {
                   }
                }
         }     
-  
+
         return numPaths;
     }
 
@@ -108,7 +108,6 @@ public class MyProject implements Project {
 			boolean done = false;
 			int IP_ID = 0;
 			int hop = 0;
-			boolean notInNetwork = false;
 			boolean found = false;
 			while(!done)
 			{	
@@ -117,33 +116,26 @@ public class MyProject implements Project {
 				short[] IP2 = new short []{IP[0],IP[1]};
 				short[] IP3 = new short []{IP[0],IP[1],IP[2]};
 				short[] IP4 = new short []{IP[0],IP[1],IP[2],IP[3]};
-				if(Arrays.equals(subnet,IP1)| Arrays.equals(subnet,IP2)| Arrays.equals(subnet,IP3)| Arrays.equals(subnet,IP4)| subnet.length == 0)
+				if(Arrays.equals(subnet,IP1)| Arrays.equals(subnet,IP2)| Arrays.equals(subnet,IP3)| Arrays.equals(subnet,IP4)| subnet.length == 0)// Checks if IP is int query
 				{
 					int temp = findHops(adjlist, IP_ID, src);
-					if(temp < hop | found == false)
+					if(temp < hop | found == false)// If new deivce takes less hops or if it is the first device found save hop
 					{
 						hop = temp;
 					}
 					found = true;
 				}
-				if(!found & IP_ID == addrs.length - 1)
+				if(!found & IP_ID == addrs.length - 1)//No IP address in subnet
 				{
-					notInNetwork = true;
+					hops[subnetID] = Integer.MAX_VALUE;
 					done = true;
 				}
-				else if(found & IP_ID == addrs.length - 1)
+				else if(found & IP_ID == addrs.length - 1)//Shortest path found
 				{
 					done = true;
+					hops[subnetID] = hop;
 				}
 				IP_ID++;
-			}
-			if(notInNetwork)
-			{
-				hops[subnetID] = Integer.MAX_VALUE;
-			}
-			else
-			{
-				hops[subnetID] = hop;
 			}
 			subnetID++;
 		}
@@ -153,7 +145,7 @@ public class MyProject implements Project {
 // queue of how many hops it takes to get to that device
 	private int findHops(int[][] adjlist, int dst, int src) {
 		int hop = Integer.MAX_VALUE;
-        if (src == dst) 
+        if (src == dst) //Distance from current device to inself is 0
 		{
 			return 0;
 		}
@@ -169,16 +161,16 @@ public class MyProject implements Project {
         while (!queue.isEmpty())
 		{
 			int device = queue.poll();
-            for (int col = 0; col < adjlist[device].length; col++)
+            for (int col = 0; col < adjlist[device].length; col++) 
 			{
-                int vis = adjlist[device][col];
+                int vis = adjlist[device][col];//Device being visited
             
                 if(!visited[vis])
 		 		{		
-					hopsToDevice[vis] = hopsToDevice[device] + 1; 	
+					hopsToDevice[vis] = hopsToDevice[device] + 1; 	//To reach visited device from current device is current devices hops + 1
                     visited[vis] = true;
                 	queue.add(vis);
-					if(vis==dst)
+					if(vis==dst)// device found
 					{
 					hop = hopsToDevice[vis];
 					queue.clear();

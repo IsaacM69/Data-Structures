@@ -100,7 +100,6 @@ public class MyProject implements Project {
 
     public int[] closestInSubnet(int[][] adjlist, short[][] addrs, int src, short[][] queries) {
         int [] hops = new int[queries.length];
-		int [] sourceDevice = adjlist[src];
 		int subnetID = 0;
 		
 		for(short[] subnet: queries)
